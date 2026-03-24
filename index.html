@@ -321,6 +321,7 @@ function show(id){
 // ---- PRESCRIPTION ----
 function handlePrescFile(e){
   const file = e.target.files[0]; if(!file) return;
+  window.reportMime = file.type:
   const reader = new FileReader();
   reader.onload = function(){
     prescImgB64 = reader.result;
@@ -424,45 +425,46 @@ async function analyzeReport(){
  document.getElementById('rresult').style.display = 'none';
  let data;
  try {
-   let data;
-try {
- const prompt = "Read this medical report and explain in simple English. Return JSON only.";
- const base64 = reportImgB64.split(',')[1];
- const res = await fetch(
-   `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${AIzaSyBnmNke7GiQutMG6ulsWbQVobPB7bkJVp8}`,
-   {
-     method: "POST",
-     headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({
-       contents: [{
-         parts: [
-           { text: prompt },
-           {
-             inline_data: {
-               mime_type: "image/jpeg",
-               data: base64
+   const prompt = "Read this medical report and explain in simple English. Return JSON only.";
+   const base64 = reportImgB64.split(',')[1];
+   const res = await fetch(
+     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+     {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({
+         contents: [{
+           parts: [
+             { text: prompt },
+             {
+               inline_data: {
+                 mime_type: window.reportMime,
+                 data: base64
+               }
              }
-           }
-         ]
-       }]
-     })
+           ]
+         }]
+       })
+     }
+   );
+   const out = await res.json();
+   if (!out.candidates || !out.candidates[0]) {
+     throw new Error("No Gemini response");
    }
- );
- const out = await res.json();
- const txt = out.candidates[0].content.parts[0].text;
- data = JSON.parse(txt.replace(/```json|```/g,'').trim());
-} catch(err) {
- data = mockReport();
-}
+   const txt = out.candidates[0].content.parts[0].text.trim();
+   const clean = txt.replace(/```json|```/g,'').trim();
+   data = JSON.parse(clean);
  } catch(err) {
-   data = mockReport();
+   alert("Error reading report. Please try again.");
+   console.error(err);
+   return;
  }
  document.getElementById('rloading').style.display = 'none';
  const el = document.getElementById('rresult');
  el.style.display = 'block';
  el.innerHTML = renderReport(data);
 }
-
+  
 function getReportPrompt(){
   return `You are a friendly health assistant. Look at this medical test report and explain each value in VERY simple English (like for a 15-year-old). No medical jargon.
 
