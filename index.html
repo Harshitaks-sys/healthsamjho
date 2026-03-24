@@ -424,15 +424,17 @@ async function analyzeReport(){
 
   let data;
   try {
-    if(apiKey) {
-      data = await callClaudeWithImage(reportImgB64, getReportPrompt());
-    } else {
-      await fakeDelay(2200);
-      data = mockReport();
-    }
-  } catch(err) {
-    data = mockReport();
-  }
+
+  await fakeDelay(...);
+
+  data = mockReport();
+
+} catch(err) {
+
+  data = mockReport();
+
+}
+ 
 
   document.getElementById('rloading').style.display = 'none';
   const el = document.getElementById('rresult');
@@ -544,12 +546,17 @@ async function analyzeConversation(){
 
   let data;
   try {
-    if(apiKey){
-      data = await callClaude(getConvPrompt(text));
-    } else {
-      await fakeDelay(2000);
-      data = mockConversation();
-    }
+
+  await fakeDelay(...);
+
+  data = mockConversation();
+
+} catch(err) {
+
+  data = mockConversation();
+
+}
+ 
   } catch(e){
     data = mockConversation();
   }
