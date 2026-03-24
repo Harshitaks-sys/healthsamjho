@@ -25,12 +25,6 @@ body{font-family:'Nunito',system-ui,sans-serif}
 .app-title em{color:#22c55e;font-style:normal}
 .app-sub{font-size:15px;font-weight:600;color:var(--color-text-secondary);margin-top:6px}
 
-/* API row */
-.api-row{margin:0 16px 12px;background:var(--color-background-secondary);border-radius:14px;padding:12px 14px;border:0.5px solid var(--color-border-tertiary)}
-.api-row p{font-size:12px;font-weight:700;color:var(--color-text-secondary);margin-bottom:8px}
-.api-flex{display:flex;gap:8px}
-.api-flex input{flex:1;border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;background:var(--color-background-primary);color:var(--color-text-primary);outline:none;font-family:inherit}
-.api-flex button{background:#22c55e;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
 
 .feat-cards{padding:0 16px;display:flex;flex-direction:column;gap:14px}
 .fc{border-radius:24px;padding:22px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s}
@@ -307,11 +301,13 @@ body{font-family:'Nunito',system-ui,sans-serif}
 
 <script>
 let prescImgB64 = null;
+
 let reportImgB64 = null;
+const GEMINI_API_KEY = "AIzaSyBJ9jb3Jq7350iTESmuTlohyNDN6V2te4M";
 let recInterval = null;
 let recSecs = 0;
 let mediaRec = null;
-const GEMINI_API_KEY = "AIzaSyBnmNke7GiQutMG6ulsWbQVobPB7bkJVp8";
+
 function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
  document.getElementById(id).classList.add('on');
@@ -321,7 +317,7 @@ function show(id){
 // ---- PRESCRIPTION ----
 function handlePrescFile(e){
   const file = e.target.files[0]; if(!file) return;
-  window.reportMime = file.type:
+  window.reportMime = file.type;
   const reader = new FileReader();
   reader.onload = function(){
     prescImgB64 = reader.result;
@@ -336,36 +332,58 @@ function handlePrescFile(e){
 
 async function analyzePrescription(){
 
+  async function analyzePrescription(){
+
   document.getElementById('panalyze-btn').style.display = 'none';
-
   document.getElementById('pimg-wrap').style.display = 'none';
-
   document.getElementById('ploading').style.display = 'block';
-
   document.getElementById('presult').style.display = 'none';
 
   let data;
 
   try {
 
-    await fakeDelay(2000);
+    const base64 = prescImgB64.split(',')[1];
 
-    data = mockPrescription();
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: getPrescPrompt() },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: base64
+                }
+              }
+            ]
+          }]
+        })
+      }
+    );
+
+    const out = await res.json();
+
+    const txt = out.candidates[0].content.parts[0].text.trim();
+    const clean = txt.replace(/```json|```/g,'').trim();
+
+    data = JSON.parse(clean);
 
   } catch(err) {
-
-    data = mockPrescription();
-
+    alert("Error reading prescription. Try again.");
+    console.error(err);
+    return;
   }
 
   document.getElementById('ploading').style.display = 'none';
 
   const el = document.getElementById('presult');
-
   el.style.display = 'block';
-
   el.innerHTML = renderPrescription(data);
-
 }
  
 
@@ -619,41 +637,6 @@ function renderConversation(data){
 }
 
 // ---- AI CALLS ----
-async function callClaudeWithImage(b64, prompt){
-  const matches = b64.match(/^data:([^;]+);base64,(.+)$/);
-  const mediaType = matches[1];
-  const imgData = matches[2];
-  const res = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:mediaType,data:imgData}},
-        {type:'text',text:prompt}
-      ]}]
-    })
-  });
-  const d = await res.json();
-  const txt = d.content?.[0]?.text||'{}';
-  return JSON.parse(txt.match(/\{[\s\S]*\}/)?.[0]||'{}');
-}
-
-async function callClaude(prompt){
-  const res = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      messages:[{role:'user',content:prompt}]
-    })
-  });
-  const d = await res.json();
-  const txt = d.content?.[0]?.text||'{}';
-  return JSON.parse(txt.match(/\{[\s\S]*\}/)?.[0]||'{}');
-}
 
 // ---- MOCK DATA ----
 function mockPrescription(){
