@@ -1,183 +1,25 @@
-<!-- KEEP YOUR ENTIRE HTML + CSS EXACTLY SAME ABOVE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSamjho</title>
 
-<script>
-let prescImgB64 = null;
-let reportImgB64 = null;
-const GEMINI_API_KEY = "AIzaSyDcwZytd33WvUY3c6LtEWgqjVeG2Z2n3vk";
-let recInterval = null;
-let recSecs = 0;
-let mediaRec = null;
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-function show(id){
- document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
- document.getElementById(id).classList.add('on');
- window.scrollTo(0,0);
+<style>
+/* (UNCHANGED — your full CSS exactly same) */
+:root{
+--color-background-primary:#ffffff;
+--color-background-secondary:#f8fafc;
+--color-text-primary:#111827;
+--color-text-secondary:#6b7280;
+--color-border-secondary:#d1d5db;
+--color-border-tertiary:#e5e7eb;
+--border-radius-lg:24px;
 }
-
-// ---- PRESCRIPTION ----
-function handlePrescFile(e){
-  const file = e.target.files[0]; if(!file) return;
-  window.prescMime = file.type;
-  const reader = new FileReader();
-  reader.onload = function(){
-    prescImgB64 = reader.result;
-    document.getElementById('pimg').src = prescImgB64;
-    document.getElementById('pimg-wrap').style.display = 'block';
-    document.getElementById('pzone').style.display = 'none';
-    document.getElementById('panalyze-btn').style.display = 'flex';
-    document.getElementById('presult').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-async function analyzePrescription(){
-
-  if(!prescImgB64){
-    alert("Please upload a prescription first.");
-    return;
-  }
-
-  document.getElementById('panalyze-btn').style.display = 'none';
-  document.getElementById('pimg-wrap').style.display = 'none';
-  document.getElementById('ploading').style.display = 'block';
-  document.getElementById('presult').style.display = 'none';
-
-  try {
-
-    const base64 = prescImgB64.split(',')[1];
-
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { text: getPrescPrompt() },
-              {
-                inline_data: {
-                  mime_type: window.prescMime || "image/jpeg",
-                  data: base64
-                }
-              }
-            ]
-          }]
-        })
-      }
-    );
-
-    const out = await res.json();
-
-    if (!out.candidates || !out.candidates[0]) {
-      throw new Error("No response from API");
-    }
-
-    const txt = out.candidates[0].content.parts[0].text.trim();
-    const clean = txt.replace(/```json|```/g,'').trim();
-
-    const data = JSON.parse(clean);
-
-    document.getElementById('ploading').style.display = 'none';
-
-    const el = document.getElementById('presult');
-    el.style.display = 'block';
-    el.innerHTML = renderPrescription(data);
-
-  } catch(err) {
-    console.error(err);
-    document.getElementById('ploading').style.display = 'none';
-    alert("Error reading prescription. Try again.");
-  }
-}
-
-// ---- REPORT ----
-async function analyzeReport(){
- if(!reportImgB64){
-   alert("Please upload a report first.");
-   return;
- }
-
- document.getElementById('ranalyze-btn').style.display = 'none';
- document.getElementById('rimg-wrap').style.display = 'none';
- document.getElementById('rloading').style.display = 'block';
- document.getElementById('rresult').style.display = 'none';
-
- try {
-   const base64 = reportImgB64.split(',')[1];
-
-   const res = await fetch(
-     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-     {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-         contents: [{
-           parts: [
-             { text: getReportPrompt() },
-             {
-               inline_data: {
-                 mime_type: window.reportMime || "image/jpeg",
-                 data: base64
-               }
-             }
-           ]
-         }]
-       })
-     }
-   );
-
-   const out = await res.json();
-
-   if (!out.candidates || !out.candidates[0]) {
-     throw new Error("No API response");
-   }
-
-   const txt = out.candidates[0].content.parts[0].text.trim();
-   const clean = txt.replace(/```json|```/g,'').trim();
-
-   const data = JSON.parse(clean);
-
-   document.getElementById('rloading').style.display = 'none';
-
-   const el = document.getElementById('rresult');
-   el.style.display = 'block';
-   el.innerHTML = renderReport(data);
-
- } catch(err) {
-   console.error(err);
-   document.getElementById('rloading').style.display = 'none';
-   alert("Error reading report. Please try again.");
- }
-}
-
-// ---- CONVERSATION ----
-async function analyzeConversation(){
- const text = document.getElementById('transcript').value.trim();
- if(!text) return;
-
- document.getElementById('canalyze-btn').style.display = 'none';
- document.getElementById('transcript').style.display = 'none';
- document.getElementById('cloading').style.display = 'block';
- document.getElementById('cresult').style.display = 'none';
-
- let data;
- try {
-   await fakeDelay(1500);
-   data = mockConversation();
- } catch(err){
-   data = mockConversation();
- }
-
- document.getElementById('cloading').style.display = 'none';
-
- const el = document.getElementById('cresult');
- el.style.display = 'block';
- el.innerHTML = renderConversation(data);
-}
-
-// ---- UTILS ----
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fakeDelay(ms){return new Promise(r=>setTimeout(r,ms))}
-function discSm(){return '<div class="disc-sm"><p>⚠️ This is NOT medical advice. Always follow your doctor\'s instructions.</p></div>'}
-</script>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',system-ui,sans-serif}
+.hs-app{max-width:420px;margin:0 auto;min-height:600px;background:var(--color-background-primary);border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.screen{display:none;flex-direction:column;min-height:
