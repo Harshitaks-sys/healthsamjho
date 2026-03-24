@@ -417,29 +417,21 @@ function handleReportFile(e){
 }
 
 async function analyzeReport(){
-  document.getElementById('ranalyze-btn').style.display = 'none';
-  document.getElementById('rimg-wrap').style.display = 'none';
-  document.getElementById('rloading').style.display = 'block';
-  document.getElementById('rresult').style.display = 'none';
-
-  let data;
-  try {
-
-  await fakeDelay(...);
-
-  data = mockReport();
-
-} catch(err) {
-
-  data = mockReport();
-
-}
- 
-
-  document.getElementById('rloading').style.display = 'none';
-  const el = document.getElementById('rresult');
-  el.style.display = 'block';
-  el.innerHTML = renderReport(data);
+ document.getElementById('ranalyze-btn').style.display = 'none';
+ document.getElementById('rimg-wrap').style.display = 'none';
+ document.getElementById('rloading').style.display = 'block';
+ document.getElementById('rresult').style.display = 'none';
+ let data;
+ try {
+   await fakeDelay(2200);
+   data = mockReport();
+ } catch(err) {
+   data = mockReport();
+ }
+ document.getElementById('rloading').style.display = 'none';
+ const el = document.getElementById('rresult');
+ el.style.display = 'block';
+ el.innerHTML = renderReport(data);
 }
 
 function getReportPrompt(){
@@ -537,34 +529,23 @@ async function toggleRecord(){
 }
 
 async function analyzeConversation(){
-  const text = document.getElementById('transcript').value.trim();
-  if(!text) return;
-  document.getElementById('canalyze-btn').style.display = 'none';
-  document.getElementById('transcript').style.display = 'none';
-  document.getElementById('cloading').style.display = 'block';
-  document.getElementById('cresult').style.display = 'none';
-
-  let data;
-  try {
-
-  await fakeDelay(...);
-
-  data = mockConversation();
-
-} catch(err) {
-
-  data = mockConversation();
-
-}
- 
-  } catch(e){
-    data = mockConversation();
-  }
-
-  document.getElementById('cloading').style.display = 'none';
-  const el = document.getElementById('cresult');
-  el.style.display = 'block';
-  el.innerHTML = renderConversation(data);
+ const text = document.getElementById('transcript').value.trim();
+ if(!text) return;
+ document.getElementById('canalyze-btn').style.display = 'none';
+ document.getElementById('transcript').style.display = 'none';
+ document.getElementById('cloading').style.display = 'block';
+ document.getElementById('cresult').style.display = 'none';
+ let data;
+ try {
+   await fakeDelay(2000);
+   data = mockConversation();
+ } catch(err){
+   data = mockConversation();
+ }
+ document.getElementById('cloading').style.display = 'none';
+ const el = document.getElementById('cresult');
+ el.style.display = 'block';
+ el.innerHTML = renderConversation(data);
 }
 
 function getConvPrompt(text){
