@@ -317,7 +317,7 @@ function show(id){
 // ---- PRESCRIPTION ----
 function handlePrescFile(e){
   const file = e.target.files[0]; if(!file) return;
-  window.reportMime = file.type;
+  window.prescMime = file.type;
   const reader = new FileReader();
   reader.onload = function(){
     prescImgB64 = reader.result;
@@ -353,23 +353,18 @@ console.log("Base64 exists:", !!base64);
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{
-            parts: [
-              { text: getPrescPrompt() },
-              {
-                inline_data: {
-          
-  mime_type: window.prescMime || "image/jpeg",
-  data: base64
-}
-                  data: base64
-                }
-              }
-            ]
-          }]
-        })
+  contents: [{
+    parts: [
+      { text: getPrescPrompt() },
+      {
+        inline_data: {
+          mime_type: window.prescMime || "image/jpeg",
+          data: base64
+        }
       }
-    );
+    ]
+  }]
+})
 
     const out = await res.json();
 
@@ -419,6 +414,7 @@ function renderPrescription(data){
 
 function resetPresc(){
   prescImgB64 = null;
+   window.prescMime = null;
   document.getElementById('pzone').style.display = 'block';
   document.getElementById('pimg-wrap').style.display = 'none';
   document.getElementById('panalyze-btn').style.display = 'none';
@@ -429,6 +425,7 @@ function resetPresc(){
 // ---- REPORT ----
 function handleReportFile(e){
   const file = e.target.files[0]; if(!file) return;
+  window.reportMime = file.type;
   const reader = new FileReader();
   reader.onload = function(){
     reportImgB64 = reader.result;
@@ -448,7 +445,7 @@ async function analyzeReport(){
  document.getElementById('rresult').style.display = 'none';
  let data;
  try {
-   const prompt = "Read this medical report and explain in simple English. Return JSON only.";
+   const prompt = getReportPrompt();
    const base64 = reportImgB64.split(',')[1];
    const res = await fetch(
      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -526,6 +523,7 @@ function renderReport(data){
 
 function resetReport(){
   reportImgB64 = null;
+   window.reportMime = null;
   document.getElementById('rzone').style.display = 'block';
   document.getElementById('rimg-wrap').style.display = 'none';
   document.getElementById('ranalyze-btn').style.display = 'none';
