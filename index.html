@@ -1,6 +1,15 @@
 
 
 <style>
+  :root{
+ --color-background-primary:#ffffff;
+ --color-background-secondary:#f8fafc;
+ --color-text-primary:#111827;
+ --color-text-secondary:#6b7280;
+ --color-border-secondary:#d1d5db;
+ --color-border-tertiary:#e5e7eb;
+ --border-radius-lg:24px;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Nunito',system-ui,sans-serif}
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -146,13 +155,6 @@ body{font-family:'Nunito',system-ui,sans-serif}
   <div class="app-sub">Your health, explained simply</div>
 </div>
 
-<div class="api-row" id="api-section">
-  <p>🔑 Enter Anthropic API key for real AI (optional — works with demo data too)</p>
-  <div class="api-flex">
-    <input type="password" id="api-key-input" placeholder="sk-ant-..." />
-    <button onclick="saveKey()">Save</button>
-  </div>
-</div>
 
 <div class="feat-cards">
   <div class="fc fc-green" onclick="show('prescription')">
@@ -304,25 +306,6 @@ body{font-family:'Nunito',system-ui,sans-serif}
 </div>
 
 <script>
-let apiKey = localStorage.getItem('hs_api_key') || '';
-let prescImgB64 = null;
-let reportImgB64 = null;
-let recInterval = null;
-let recSecs = 0;
-let mediaRec = null;
-
-if(apiKey) {
-  document.getElementById('api-key-input').value = apiKey;
-}
-
-function saveKey(){
-  apiKey = document.getElementById('api-key-input').value.trim();
-  localStorage.setItem('hs_api_key', apiKey);
-  const btn = document.querySelector('#api-section button');
-  btn.textContent = '✓ Saved';
-  btn.style.background = '#16a34a';
-  setTimeout(()=>{btn.textContent='Save';btn.style.background='#22c55e'},2000);
-}
 
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
@@ -353,9 +336,7 @@ async function analyzePrescription(){
 
   let data;
   try {
-    if(apiKey) {
-      data = await callClaudeWithImage(prescImgB64, getPrescPrompt());
-    } else {
+  
       await fakeDelay(2000);
       data = mockPrescription();
     }
