@@ -311,6 +311,7 @@ let reportImgB64 = null;
 let recInterval = null;
 let recSecs = 0;
 let mediaRec = null;
+const GEMINI_API_KEY = "AIzaSyBnmNke7GiQutMG6ulsWbQVobPB7bkJVp8";
 function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
  document.getElementById(id).classList.add('on');
@@ -423,8 +424,36 @@ async function analyzeReport(){
  document.getElementById('rresult').style.display = 'none';
  let data;
  try {
-   await fakeDelay(2200);
-   data = mockReport();
+   let data;
+try {
+ const prompt = "Read this medical report and explain in simple English. Return JSON only.";
+ const base64 = reportImgB64.split(',')[1];
+ const res = await fetch(
+   `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${AIzaSyBnmNke7GiQutMG6ulsWbQVobPB7bkJVp8}`,
+   {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({
+       contents: [{
+         parts: [
+           { text: prompt },
+           {
+             inline_data: {
+               mime_type: "image/jpeg",
+               data: base64
+             }
+           }
+         ]
+       }]
+     })
+   }
+ );
+ const out = await res.json();
+ const txt = out.candidates[0].content.parts[0].text;
+ data = JSON.parse(txt.replace(/```json|```/g,'').trim());
+} catch(err) {
+ data = mockReport();
+}
  } catch(err) {
    data = mockReport();
  }
