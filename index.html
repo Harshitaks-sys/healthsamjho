@@ -1,30 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HealthSamjho</title>
 
 <style>
-/* --- SAME CSS (UNCHANGED) --- */
-:root{
- --color-background-primary:#ffffff;
- --color-background-secondary:#f8fafc;
- --color-text-primary:#111827;
- --color-text-secondary:#6b7280;
- --color-border-secondary:#d1d5db;
- --color-border-tertiary:#e5e7eb;
- --border-radius-lg:24px;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f9fafb;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',system-ui,sans-serif}
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-.hs-app{max-width:420px;margin:0 auto;min-height:600px;background:#fff;border-radius:24px;overflow:hidden}
-.screen{display:none}
-.screen.on{display:block}
+.hs-app {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
 
-/* keep your existing UI styles */
+.screen {
+  display: none;
+}
+
+.screen.on {
+  display: block;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #e5e7eb;
+  color: black;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.result {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 14px;
+  white-space: pre-wrap;
+}
 </style>
 </head>
 
@@ -34,54 +66,50 @@ body{font-family:'Nunito',system-ui,sans-serif}
 
 <!-- HOME -->
 <div id="home" class="screen on">
-  <div style="padding:30px;text-align:center">
-    <h1>HealthSamjho</h1>
-    <p>Your health, explained simply</p>
+  <h2>HealthSamjho</h2>
+  <p>Your health, explained simply</p>
 
-    <br>
-
-    <button onclick="show('prescription')">Prescription</button>
-    <button onclick="show('report')">Report</button>
-    <button onclick="show('conversation')">Conversation</button>
-  </div>
+  <button onclick="show('prescription')">💊 Prescription Decoder</button>
+  <button onclick="show('report')">🧪 Test Report Explainer</button>
+  <button onclick="show('conversation')">🎙️ Doctor Conversation</button>
 </div>
 
 <!-- PRESCRIPTION -->
 <div id="prescription" class="screen">
-  <button onclick="show('home')">← Back</button>
+  <button class="secondary" onclick="show('home')">← Back</button>
 
-  <input type="file" id="pfile" accept="image/*" onchange="handlePrescFile(event)">
-  <br><br>
+  <h3>Upload Prescription</h3>
+  <input type="file" id="pfile" accept="image/*">
 
-  <button onclick="analyzePrescription()">Analyze</button>
+  <button onclick="analyzePrescription()">Analyze Prescription</button>
 
-  <div id="ploading" style="display:none">Loading...</div>
-  <div id="presult"></div>
+  <div id="ploading" style="display:none;">Analyzing...</div>
+  <div id="presult" class="result"></div>
 </div>
 
 <!-- REPORT -->
 <div id="report" class="screen">
-  <button onclick="show('home')">← Back</button>
+  <button class="secondary" onclick="show('home')">← Back</button>
 
-  <input type="file" id="rfile" accept="image/*" onchange="handleReportFile(event)">
-  <br><br>
+  <h3>Upload Report</h3>
+  <input type="file" id="rfile" accept="image/*">
 
-  <button onclick="analyzeReport()">Analyze</button>
+  <button onclick="analyzeReport()">Analyze Report</button>
 
-  <div id="rloading" style="display:none">Loading...</div>
-  <div id="rresult"></div>
+  <div id="rloading" style="display:none;">Analyzing...</div>
+  <div id="rresult" class="result"></div>
 </div>
 
 <!-- CONVERSATION -->
 <div id="conversation" class="screen">
-  <button onclick="show('home')">← Back</button>
+  <button class="secondary" onclick="show('home')">← Back</button>
 
-  <textarea id="transcript" placeholder="Type doctor conversation..."></textarea>
-  <br><br>
+  <h3>Doctor Conversation</h3>
+  <textarea id="transcript" rows="6" placeholder="Type what doctor said..."></textarea>
 
-  <button onclick="analyzeConversation()">Analyze</button>
+  <button onclick="analyzeConversation()">Summarize</button>
 
-  <div id="cresult"></div>
+  <div id="cresult" class="result"></div>
 </div>
 
 </div>
@@ -91,27 +119,21 @@ body{font-family:'Nunito',system-ui,sans-serif}
 /* ================= CONFIG ================= */
 const GEMINI_API_KEY = "AIzaSyBJ9jb3Jq7350iTESmuTlohyNDN6V2te4M";
 
-/* ================= NAV ================= */
+/* ================= NAVIGATION ================= */
 function show(id){
- document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
- document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('on');
+  });
+
+  const el = document.getElementById(id);
+  if(el) el.classList.add('on');
 }
 
 /* ================= PRESCRIPTION ================= */
-let prescImgB64 = null;
-
-function handlePrescFile(e){
-  const file = e.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => prescImgB64 = reader.result;
-  reader.readAsDataURL(file);
-}
-
 async function analyzePrescription(){
 
-  if(!prescImgB64){
+  const file = document.getElementById('pfile').files[0];
+  if(!file){
     alert("Upload image first");
     return;
   }
@@ -120,7 +142,7 @@ async function analyzePrescription(){
 
   try {
 
-    const base64 = prescImgB64.split(',')[1];
+    const base64 = await toBase64(file);
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -130,11 +152,11 @@ async function analyzePrescription(){
         body: JSON.stringify({
           contents:[{
             parts:[
-              { text: getPrescPrompt() },
+              { text:"Explain this prescription simply. Return JSON." },
               {
                 inline_data:{
                   mime_type:"image/jpeg",
-                  data:base64
+                  data:base64.split(',')[1]
                 }
               }
             ]
@@ -143,46 +165,23 @@ async function analyzePrescription(){
       }
     );
 
-    const out = await res.json();
+    const data = await safeParse(res);
 
-    if(!out.candidates){
-      throw new Error("No response");
-    }
-
-    const text = out.candidates[0].content.parts[0].text;
-    const clean = text.replace(/```json|```/g,'');
-
-    const data = JSON.parse(clean);
-
-    document.getElementById('presult').innerHTML = JSON.stringify(data, null, 2);
+    document.getElementById('presult').innerText = JSON.stringify(data, null, 2);
 
   } catch(err){
+    alert("Error analyzing prescription");
     console.error(err);
-    alert("Failed to analyze prescription");
   }
 
   document.getElementById('ploading').style.display = 'none';
 }
 
-function getPrescPrompt(){
-  return `Explain medicines simply. Return JSON only.`;
-}
-
 /* ================= REPORT ================= */
-let reportImgB64 = null;
-
-function handleReportFile(e){
-  const file = e.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => reportImgB64 = reader.result;
-  reader.readAsDataURL(file);
-}
-
 async function analyzeReport(){
 
-  if(!reportImgB64){
+  const file = document.getElementById('rfile').files[0];
+  if(!file){
     alert("Upload image first");
     return;
   }
@@ -191,7 +190,7 @@ async function analyzeReport(){
 
   try {
 
-    const base64 = reportImgB64.split(',')[1];
+    const base64 = await toBase64(file);
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -201,11 +200,11 @@ async function analyzeReport(){
         body: JSON.stringify({
           contents:[{
             parts:[
-              { text: getReportPrompt() },
+              { text:"Explain this medical report simply. Return JSON." },
               {
                 inline_data:{
                   mime_type:"image/jpeg",
-                  data:base64
+                  data:base64.split(',')[1]
                 }
               }
             ]
@@ -214,41 +213,78 @@ async function analyzeReport(){
       }
     );
 
-    const out = await res.json();
+    const data = await safeParse(res);
 
-    if(!out.candidates){
-      throw new Error("No response");
-    }
-
-    const text = out.candidates[0].content.parts[0].text;
-    const clean = text.replace(/```json|```/g,'');
-
-    const data = JSON.parse(clean);
-
-    document.getElementById('rresult').innerHTML = JSON.stringify(data, null, 2);
+    document.getElementById('rresult').innerText = JSON.stringify(data, null, 2);
 
   } catch(err){
+    alert("Error analyzing report");
     console.error(err);
-    alert("Failed to analyze report");
   }
 
   document.getElementById('rloading').style.display = 'none';
 }
 
-function getReportPrompt(){
-  return `Explain report simply. Return JSON only.`;
-}
-
 /* ================= CONVERSATION ================= */
-function analyzeConversation(){
-  const text = document.getElementById('transcript').value;
+async function analyzeConversation(){
+
+  const text = document.getElementById('transcript').value.trim();
 
   if(!text){
-    alert("Enter text");
+    alert("Enter conversation");
     return;
   }
 
-  document.getElementById('cresult').innerHTML = "Summary generated (mock)";
+  try {
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({
+          contents:[{
+            parts:[
+              { text:`Summarize this doctor conversation simply: ${text}` }
+            ]
+          }]
+        })
+      }
+    );
+
+    const data = await safeParse(res);
+
+    document.getElementById('cresult').innerText = JSON.stringify(data, null, 2);
+
+  } catch(err){
+    alert("Error analyzing conversation");
+  }
+}
+
+/* ================= HELPERS ================= */
+function toBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function safeParse(res){
+  const out = await res.json();
+
+  if(!out.candidates){
+    throw new Error("No API response");
+  }
+
+  const text = out.candidates[0].content.parts[0].text;
+
+  try{
+    return JSON.parse(text.replace(/```json|```/g,''));
+  }catch{
+    return { raw:text };
+  }
 }
 
 </script>
