@@ -306,11 +306,15 @@ body{font-family:'Nunito',system-ui,sans-serif}
 </div>
 
 <script>
-
+let prescImgB64 = null;
+let reportImgB64 = null;
+let recInterval = null;
+let recSecs = 0;
+let mediaRec = null;
 function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-  window.scrollTo(0,0);
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+ document.getElementById(id).classList.add('on');
+ window.scrollTo(0,0);
 }
 
 // ---- PRESCRIPTION ----
@@ -329,26 +333,39 @@ function handlePrescFile(e){
 }
 
 async function analyzePrescription(){
+
   document.getElementById('panalyze-btn').style.display = 'none';
+
   document.getElementById('pimg-wrap').style.display = 'none';
+
   document.getElementById('ploading').style.display = 'block';
+
   document.getElementById('presult').style.display = 'none';
 
   let data;
+
   try {
-  
-      await fakeDelay(2000);
-      data = mockPrescription();
-    }
-  } catch(err) {
+
+    await fakeDelay(2000);
+
     data = mockPrescription();
+
+  } catch(err) {
+
+    data = mockPrescription();
+
   }
 
   document.getElementById('ploading').style.display = 'none';
+
   const el = document.getElementById('presult');
+
   el.style.display = 'block';
+
   el.innerHTML = renderPrescription(data);
+
 }
+ 
 
 function getPrescPrompt(){
   return `You are a friendly health assistant. Look at this prescription image and explain each medicine in VERY simple English (like for a 15-year-old). No medical jargon at all.
