@@ -332,7 +332,7 @@ function handlePrescFile(e){
 
 async function analyzePrescription(){
 
-  async function analyzePrescription(){
+
 
   document.getElementById('panalyze-btn').style.display = 'none';
   document.getElementById('pimg-wrap').style.display = 'none';
@@ -344,6 +344,8 @@ async function analyzePrescription(){
   try {
 
     const base64 = prescImgB64.split(',')[1];
+    console.log("MIME TYPE:", window.prescMime);   
+console.log("Base64 exists:", !!base64); 
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -356,7 +358,10 @@ async function analyzePrescription(){
               { text: getPrescPrompt() },
               {
                 inline_data: {
-                  mime_type: "image/jpeg",
+          
+  mime_type: window.prescMime || "image/jpeg",
+  data: base64
+}
                   data: base64
                 }
               }
