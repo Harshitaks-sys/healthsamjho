@@ -1,695 +1,548 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HealthSamjho – Understand Your Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root{
- --color-background-primary:#ffffff;
- --color-background-secondary:#f8fafc;
- --color-text-primary:#111827;
- --color-text-secondary:#6b7280;
- --color-border-secondary:#d1d5db;
- --color-border-tertiary:#e5e7eb;
- --border-radius-lg:24px;
-}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Nunito',system-ui,sans-serif}
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-.hs-app{max-width:420px;margin:0 auto;min-height:600px;background:var(--color-background-primary);border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
-.screen{display:none;flex-direction:column;min-height:600px}
+html,body{height:100%;font-family:'Nunito',system-ui,sans-serif;background:#f0fdf4}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;position:relative}
+.screen{display:none;flex-direction:column;min-height:100vh;padding-bottom:32px}
 .screen.on{display:flex}
-
-/* HOME */
-.home-bg{background:linear-gradient(160deg,#f0fdf4 0%,var(--color-background-primary) 55%);flex:1;display:flex;flex-direction:column}
-.home-head{text-align:center;padding:32px 20px 20px}
-.logo-box{width:72px;height:72px;background:#22c55e;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:12px}
-.app-title{font-size:32px;font-weight:900;color:var(--color-text-primary);line-height:1}
-.app-title em{color:#22c55e;font-style:normal}
-.app-sub{font-size:15px;font-weight:600;color:var(--color-text-secondary);margin-top:6px}
-
-/* API row */
-.api-row{margin:0 16px 12px;background:var(--color-background-secondary);border-radius:14px;padding:12px 14px;border:0.5px solid var(--color-border-tertiary)}
-.api-row p{font-size:12px;font-weight:700;color:var(--color-text-secondary);margin-bottom:8px}
-.api-flex{display:flex;gap:8px}
-.api-flex input{flex:1;border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;background:var(--color-background-primary);color:var(--color-text-primary);outline:none;font-family:inherit}
-.api-flex button{background:#22c55e;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
-
-.feat-cards{padding:0 16px;display:flex;flex-direction:column;gap:14px}
-.fc{border-radius:24px;padding:22px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s}
-.fc:active{transform:scale(0.97)}
-.blob{position:absolute;border-radius:50%;background:rgba(255,255,255,0.15)}
-.b1{width:100px;height:100px;right:-16px;top:-16px}
-.b2{width:130px;height:130px;right:-30px;bottom:-30px;background:rgba(255,255,255,0.08)}
-.fc-green{background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 12px 32px rgba(34,197,94,0.3)}
-.fc-blue{background:linear-gradient(135deg,#38bdf8,#0369a1);box-shadow:0 12px 32px rgba(56,189,248,0.3)}
-.fc-rose{background:linear-gradient(135deg,#fb7185,#be123c);box-shadow:0 12px 32px rgba(251,113,133,0.3)}
-.fc-icon{font-size:44px;margin-bottom:8px;position:relative;z-index:1;display:block}
-.fc-title{font-size:20px;font-weight:900;color:#fff;position:relative;z-index:1}
-.fc-desc{font-size:14px;color:rgba(255,255,255,0.85);font-weight:600;margin-top:4px;line-height:1.5;position:relative;z-index:1}
-.fc-cta{display:inline-block;margin-top:12px;background:rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:800;padding:6px 16px;border-radius:100px;position:relative;z-index:1}
-
-.disc{margin:14px 16px;padding:14px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:16px;display:flex;gap:10px}
-.disc p{font-size:13px;color:#92400e;line-height:1.5;font-weight:600}
-
-/* INNER SCREENS */
-.inner-wrap{flex:1;display:flex;flex-direction:column}
-.top-bar{display:flex;align-items:center;gap:12px;padding:20px 16px 16px}
-.back{width:40px;height:40px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0}
-.bar-info h2{font-size:20px;font-weight:900;color:var(--color-text-primary)}
-.bar-info p{font-size:13px;color:var(--color-text-secondary);font-weight:600;margin-top:2px}
-
-.pad{padding:0 16px}
-
-/* Upload zone */
-.uzone{border:2.5px dashed #86efac;background:#f0fdf4;border-radius:24px;padding:32px 20px;text-align:center;cursor:pointer;transition:background .15s;margin-bottom:14px}
-.uzone.blue-z{border-color:#7dd3fc;background:#f0f9ff}
-.uzone:active{filter:brightness(0.97)}
-.uzone-icon{font-size:56px;margin-bottom:10px;display:block}
-.uzone h3{font-size:18px;font-weight:900;color:var(--color-text-primary)}
-.uzone p{font-size:13px;color:var(--color-text-secondary);font-weight:600;margin-top:4px}
-.uzone img{max-height:180px;border-radius:14px;object-fit:contain;margin-bottom:8px;max-width:100%}
-.uzone .ok{font-size:13px;font-weight:800;color:#16a34a}
-.uzone .fname{font-size:15px;font-weight:800;color:#0369a1}
-
-/* Big button */
-.bbtn{width:100%;padding:18px;border:none;border-radius:18px;font-family:inherit;font-size:18px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s,opacity .15s;margin-bottom:12px}
-.bbtn:active{transform:scale(0.97)}
-.bbtn:disabled{opacity:.4;cursor:not-allowed}
-.bg{background:#22c55e;box-shadow:0 10px 28px rgba(34,197,94,0.32)}
-.bb{background:#0ea5e9;box-shadow:0 10px 28px rgba(14,165,233,0.32)}
-.br{background:#f43f5e;box-shadow:0 10px 28px rgba(244,63,94,0.32)}
-.bgray{background:var(--color-background-secondary);color:var(--color-text-primary);box-shadow:none;border:0.5px solid var(--color-border-secondary)}
-
-/* Loading */
-.lbox{text-align:center;padding:40px 20px}
-.lbox .le{font-size:52px;display:inline-block;animation:bob .7s ease-in-out infinite alternate}
-.lbox h3{font-size:20px;font-weight:900;color:var(--color-text-primary);margin-top:14px}
-.lbox p{font-size:14px;color:var(--color-text-secondary);font-weight:600;margin-top:4px}
-.ldots{display:flex;justify-content:center;gap:7px;margin-top:14px}
-.ldots span{width:9px;height:9px;border-radius:50%;display:inline-block}
-
-/* Result cards */
-.rtitle{font-size:22px;font-weight:900;color:var(--color-text-primary);margin:0 0 14px}
-.rcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:18px;margin-bottom:12px}
-.rcard-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.rcard-ico{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.ico-green{background:#dcfce7}
-.ico-blue{background:#e0f2fe}
-.ico-rose{background:#ffe4e6}
-.ico-amber{background:#fef3c7}
-.ico-purple{background:#ede9fe}
-.rcard h3{font-size:18px;font-weight:900;color:var(--color-text-primary)}
-.info-row{border-radius:14px;padding:10px 12px;margin-bottom:7px}
-.ir-green{background:#f0fdf4}
-.ir-blue{background:#f0f9ff}
-.ir-amber{background:#fffbeb}
-.ir-purple{background:#f5f3ff}
-.info-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.55;margin-bottom:2px}
-.info-val{font-size:15px;font-weight:700;line-height:1.4;color:var(--color-text-primary)}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:100px;border:1.5px solid}
-.badge-green{background:#dcfce7;color:#15803d;border-color:#86efac}
-.badge-red{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}
-.badge-blue{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
-.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.val-box{background:var(--color-background-secondary);border-radius:12px;padding:10px;text-align:center;border:0.5px solid var(--color-border-tertiary)}
-.val-box .vb-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary)}
-.val-box .vb-val{font-size:18px;font-weight:900;color:var(--color-text-primary);margin-top:2px}
-.summary-card{background:#f0f9ff;border:0.5px solid #bae6fd;border-radius:20px;padding:16px;margin-bottom:12px;display:flex;gap:12px}
-.summary-card.green{background:#f0fdf4;border-color:#86efac}
-.summary-card.amber{background:#fffbeb;border-color:#fde68a}
-.sc-icon{font-size:22px;flex-shrink:0;margin-top:1px}
-.sc-title{font-size:14px;font-weight:900;margin-bottom:4px;color:var(--color-text-primary)}
-.sc-text{font-size:14px;font-weight:600;color:var(--color-text-secondary);line-height:1.6}
-.step-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
-.step-list li{background:var(--color-background-secondary);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:700;color:var(--color-text-primary);display:flex;gap:10px;border:0.5px solid var(--color-border-tertiary)}
-.step-num{font-weight:900;color:#22c55e;flex-shrink:0}
-.check-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-.check-list li{background:#eff6ff;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:700;color:#1e3a8a;display:flex;gap:8px}
-.check-icon{color:#3b82f6;flex-shrink:0}
-.disc-sm{background:#fffbeb;border:1.5px solid #fde68a;border-radius:14px;padding:12px 14px;margin-bottom:12px}
-.disc-sm p{font-size:13px;color:#92400e;font-weight:700}
-
-/* Recording */
-.rec-zone{background:var(--color-background-secondary);border-radius:24px;padding:32px 20px;text-align:center;margin-bottom:14px;border:0.5px solid var(--color-border-tertiary)}
-.rec-big-icon{font-size:64px;margin-bottom:14px}
-.rec-zone h3{font-size:20px;font-weight:900;color:var(--color-text-primary)}
-.rec-zone p{font-size:14px;color:var(--color-text-secondary);font-weight:600;margin-top:6px;line-height:1.5}
-.rec-timer{font-size:36px;font-weight:900;color:#f43f5e;letter-spacing:.05em;margin:10px 0 4px}
-.pulse-ring{width:80px;height:80px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:pulse-a 1s ease-in-out infinite}
-.pulse-inner{width:60px;height:60px;border-radius:50%;background:#f43f5e;display:flex;align-items:center;justify-content:center;font-size:30px}
-.transcript-area{width:100%;border:1.5px solid var(--color-border-secondary);border-radius:16px;padding:14px;font-family:inherit;font-size:15px;font-weight:600;color:var(--color-text-primary);background:var(--color-background-primary);outline:none;resize:none;line-height:1.6;margin-bottom:14px}
-.transcript-area:focus{border-color:#f43f5e}
-.tip-box{background:#eff6ff;border:0.5px solid #bfdbfe;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.home-bg{background:linear-gradient(170deg,#f0fdf4 0%,#fff 55%);flex:1;display:flex;flex-direction:column}
+.home-head{text-align:center;padding:44px 24px 24px}
+.logo{width:80px;height:80px;background:#22c55e;border-radius:24px;display:inline-flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:14px;box-shadow:0 8px 24px rgba(34,197,94,.3)}
+.app-name{font-size:34px;font-weight:900;color:#111827;line-height:1}
+.app-name em{color:#22c55e;font-style:normal}
+.app-tagline{font-size:16px;font-weight:600;color:#6b7280;margin-top:6px}
+.cards{padding:0 20px;display:flex;flex-direction:column;gap:16px}
+.card{border-radius:28px;padding:24px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s;user-select:none}
+.card:active{transform:scale(.97)}
+.card .blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
+.card .b1{width:110px;height:110px;right:-18px;top:-18px}
+.card .b2{width:150px;height:150px;right:-35px;bottom:-35px;background:rgba(255,255,255,.07)}
+.card-green{background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 14px 36px rgba(34,197,94,.32)}
+.card-blue{background:linear-gradient(135deg,#38bdf8,#0369a1);box-shadow:0 14px 36px rgba(56,189,248,.32)}
+.card-rose{background:linear-gradient(135deg,#fb7185,#be123c);box-shadow:0 14px 36px rgba(251,113,133,.32)}
+.card-icon{font-size:48px;margin-bottom:10px;display:block;position:relative;z-index:1}
+.card-title{font-size:22px;font-weight:900;color:#fff;position:relative;z-index:1}
+.card-desc{font-size:15px;color:rgba(255,255,255,.85);font-weight:600;margin-top:5px;line-height:1.5;position:relative;z-index:1}
+.card-cta{display:inline-block;margin-top:14px;background:rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:800;padding:7px 18px;border-radius:100px;position:relative;z-index:1}
+.disc{margin:20px 20px 8px;padding:14px 16px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:18px;display:flex;gap:12px;align-items:flex-start}
+.disc p{font-size:13px;color:#92400e;line-height:1.6;font-weight:600}
+.foot{text-align:center;padding:16px 20px 0;color:#9ca3af;font-size:13px;font-weight:600}
+.top-bar{display:flex;align-items:center;gap:12px;padding:24px 20px 18px}
+.back-btn{width:44px;height:44px;background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.back-btn:active{background:#f3f4f6}
+.bar-text h2{font-size:21px;font-weight:900;color:#111827}
+.bar-text p{font-size:13px;color:#6b7280;font-weight:600;margin-top:2px}
+.inner-content{padding:0 20px;flex:1}
+.uzone{border:2.5px dashed #86efac;background:#f0fdf4;border-radius:24px;padding:36px 20px;text-align:center;cursor:pointer;transition:background .15s;margin-bottom:16px}
+.uzone.blue{border-color:#7dd3fc;background:#f0f9ff}
+.uzone:active{filter:brightness(.97)}
+.uzone-icon{font-size:60px;margin-bottom:12px;display:block}
+.uzone h3{font-size:19px;font-weight:900;color:#1f2937}
+.uzone p{font-size:13px;color:#9ca3af;font-weight:600;margin-top:5px}
+.btn{width:100%;padding:19px;border:none;border-radius:20px;font-family:inherit;font-size:19px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s,opacity .15s;margin-bottom:12px}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:#22c55e;box-shadow:0 10px 28px rgba(34,197,94,.35)}
+.btn-blue{background:#0ea5e9;box-shadow:0 10px 28px rgba(14,165,233,.35)}
+.btn-rose{background:#f43f5e;box-shadow:0 10px 28px rgba(244,63,94,.35)}
+.btn-gray{background:#f3f4f6;color:#374151;box-shadow:none;border:1.5px solid #e5e7eb}
+.loading{text-align:center;padding:48px 20px}
+.loading .emoji{font-size:56px;display:inline-block;animation:bob .7s ease-in-out infinite alternate}
+.loading h3{font-size:21px;font-weight:900;color:#1f2937;margin-top:16px}
+.loading p{font-size:14px;color:#9ca3af;font-weight:600;margin-top:5px}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.dots span{width:10px;height:10px;border-radius:50%;display:inline-block;animation:bob .6s ease-in-out infinite alternate}
+.dot1{animation-delay:0s!important}.dot2{animation-delay:.2s!important}.dot3{animation-delay:.4s!important}
+.section-title{font-size:22px;font-weight:900;color:#111827;margin-bottom:16px}
+.rcard{background:#fff;border:1px solid #e5e7eb;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.rcard-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.rcard-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ico-g{background:#dcfce7}.ico-b{background:#e0f2fe}.ico-a{background:#fef3c7}.ico-p{background:#ede9fe}
+.rcard h3{font-size:18px;font-weight:900;color:#111827}
+.info-row{border-radius:14px;padding:11px 14px;margin-bottom:8px}
+.ir-g{background:#f0fdf4}.ir-b{background:#f0f9ff}.ir-a{background:#fffbeb}.ir-p{background:#f5f3ff}
+.info-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;opacity:.5;margin-bottom:3px}
+.info-val{font-size:15px;font-weight:700;line-height:1.45;color:#1f2937}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;padding:5px 11px;border-radius:100px;border:1.5px solid;flex-shrink:0}
+.b-green{background:#dcfce7;color:#15803d;border-color:#86efac}
+.b-red{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}
+.b-blue{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.val-box{background:#f9fafb;border-radius:14px;padding:12px;text-align:center;border:1px solid #e5e7eb}
+.vb-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af}
+.vb-val{font-size:19px;font-weight:900;color:#111827;margin-top:3px}
+.summary-box{border-radius:20px;padding:16px;margin-bottom:14px;display:flex;gap:12px}
+.sb-blue{background:#f0f9ff;border:1px solid #bae6fd}
+.sb-green{background:#f0fdf4;border:1px solid #86efac}
+.sb-rose{background:#fff1f2;border:1px solid #fecdd3}
+.sb-purple{background:#f5f3ff;border:1px solid #ddd6fe}
+.sb-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.sb-head{font-size:14px;font-weight:900;color:#1f2937;margin-bottom:4px}
+.sb-text{font-size:14px;font-weight:600;color:#374151;line-height:1.6}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.check-list li{background:#eff6ff;border-radius:14px;padding:11px 14px;font-size:14px;font-weight:700;color:#1e3a8a;display:flex;gap:10px}
+.num-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.num-list li{background:#f9fafb;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:700;color:#1f2937;display:flex;gap:10px;border:1px solid #e5e7eb}
+.num{font-weight:900;color:#22c55e;flex-shrink:0}
+.warn-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:16px;padding:13px 16px;margin-bottom:14px}
+.warn-box p{font-size:13px;color:#92400e;font-weight:700}
+.err-box{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:16px;padding:16px;margin-bottom:14px;text-align:center}
+.err-box p{font-size:15px;color:#b91c1c;font-weight:700}
+.err-box small{font-size:13px;color:#ef4444;font-weight:600;display:block;margin-top:4px}
+.rec-box{background:#f9fafb;border-radius:24px;padding:36px 20px;text-align:center;margin-bottom:16px;border:1px solid #e5e7eb}
+.rec-box h3{font-size:21px;font-weight:900;color:#1f2937}
+.rec-box p{font-size:14px;color:#6b7280;font-weight:600;margin-top:8px;line-height:1.55}
+.rec-big{font-size:72px;margin-bottom:16px}
+.rec-timer{font-size:38px;font-weight:900;color:#f43f5e;letter-spacing:.05em;margin:8px 0}
+.pulse-wrap{width:88px;height:88px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;animation:pulse-r 1.1s ease-in-out infinite}
+.pulse-inner{width:66px;height:66px;border-radius:50%;background:#f43f5e;display:flex;align-items:center;justify-content:center;font-size:32px}
+.tip-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:16px;padding:13px 16px;margin-bottom:16px}
 .tip-box p{font-size:13px;color:#1d4ed8;font-weight:700}
-
-@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-8px)}}
-@keyframes pulse-a{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.textarea{width:100%;border:1.5px solid #d1d5db;border-radius:18px;padding:14px 16px;font-family:inherit;font-size:15px;font-weight:600;color:#1f2937;background:#fff;outline:none;resize:none;line-height:1.65;margin-bottom:14px;transition:border-color .15s}
+.textarea:focus{border-color:#f43f5e}
+.textarea::placeholder{color:#9ca3af}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+@keyframes pulse-r{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 </style>
-
-<div class="hs-app">
+</head>
+<body>
+<div class="app">
 
 <!-- HOME -->
 <div id="home" class="screen on">
 <div class="home-bg">
-<div class="home-head">
-  <div class="logo-box">🩺</div>
-  <div class="app-title">Health<em>Samjho</em></div>
-  <div class="app-sub">Your health, explained simply</div>
-</div>
-
-
-<div class="feat-cards">
-  <div class="fc fc-green" onclick="show('prescription')">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <span class="fc-icon">💊</span>
-    <div class="fc-title">Prescription Decoder</div>
-    <div class="fc-desc">Upload your prescription — we'll tell you what each medicine does in simple words</div>
-    <span class="fc-cta">Tap to upload →</span>
+  <div class="home-head">
+    <div class="logo">🩺</div>
+    <div class="app-name">Health<em>Samjho</em></div>
+    <div class="app-tagline">Your health, explained simply</div>
   </div>
-  <div class="fc fc-blue" onclick="show('report')">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <span class="fc-icon">🧪</span>
-    <div class="fc-title">Test Report Explainer</div>
-    <div class="fc-desc">Upload your blood test or report — we'll tell you if your numbers are normal</div>
-    <span class="fc-cta">Tap to upload →</span>
-  </div>
-  <div class="fc fc-rose" onclick="show('conversation')">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <span class="fc-icon">🎙️</span>
-    <div class="fc-title">Doctor Conversation</div>
-    <div class="fc-desc">Record or type what your doctor said — get a simple summary of key points</div>
-    <span class="fc-cta">Tap to record →</span>
-  </div>
-</div>
 
-<div class="disc">
-  <span style="font-size:20px;flex-shrink:0">⚠️</span>
-  <p><strong>Important:</strong> HealthSamjho is for understanding only. This is <strong>NOT medical advice</strong>. Always follow your doctor's instructions.</p>
-</div>
+  <div class="cards">
+    <div class="card card-green" onclick="goto('prescription')">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <span class="card-icon">💊</span>
+      <div class="card-title">Prescription Decoder</div>
+      <div class="card-desc">Upload your prescription — we'll explain what each medicine does in simple words</div>
+      <span class="card-cta">Tap to upload →</span>
+    </div>
+    <div class="card card-blue" onclick="goto('report')">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <span class="card-icon">🧪</span>
+      <div class="card-title">Test Report Explainer</div>
+      <div class="card-desc">Upload your blood test or report — we'll tell you if your numbers are normal</div>
+      <span class="card-cta">Tap to upload →</span>
+    </div>
+    <div class="card card-rose" onclick="goto('conversation')">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <span class="card-icon">🎙️</span>
+      <div class="card-title">Doctor Conversation</div>
+      <div class="card-desc">Record or type what your doctor said — get a simple summary of key points</div>
+      <span class="card-cta">Tap to record →</span>
+    </div>
+  </div>
+
+  <div class="disc">
+    <span style="font-size:22px;flex-shrink:0">⚠️</span>
+    <p><strong>Important:</strong> HealthSamjho is for understanding only. This is <strong>NOT medical advice</strong>. Always follow your doctor's instructions.</p>
+  </div>
+  <div class="foot">Made with ❤️ to help you understand your health</div>
 </div>
 </div>
 
 <!-- PRESCRIPTION -->
-<div id="prescription" class="screen">
-<div class="inner-wrap" style="background:linear-gradient(160deg,#f0fdf4 0%,var(--color-background-primary) 45%)">
+<div id="prescription" class="screen" style="background:linear-gradient(170deg,#f0fdf4 0%,#fff 40%)">
   <div class="top-bar">
-    <div class="back" onclick="show('home')">←</div>
-    <div class="bar-info"><h2>💊 Prescription Decoder</h2><p>We'll explain your medicines simply</p></div>
+    <div class="back-btn" onclick="goto('home')">←</div>
+    <div class="bar-text"><h2>💊 Prescription Decoder</h2><p>We'll explain your medicines simply</p></div>
   </div>
-  <div class="pad" style="flex:1;overflow-y:auto">
+  <div class="inner-content">
     <div class="uzone" id="pzone" onclick="document.getElementById('pfile').click()">
-      <span class="uzone-icon" id="picon">📄</span>
-      <h3 id="ptitle">Tap to Upload Prescription</h3>
-      <p id="psub">Works with photos of handwritten or printed prescriptions</p>
+      <span class="uzone-icon">📄</span>
+      <h3>Tap to Upload Prescription</h3>
+      <p>Works with photos of handwritten or printed prescriptions</p>
     </div>
-    <input type="file" id="pfile" accept="image/*" style="display:none" onchange="handlePrescFile(event)">
-    <div id="pimg-wrap" style="display:none;text-align:center;margin-bottom:14px">
-      <img id="pimg" style="max-height:200px;border-radius:16px;max-width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
+    <input type="file" id="pfile" accept="image/*" style="display:none" onchange="onPrescFile(event)">
+    <div id="ppreview" style="display:none;text-align:center;margin-bottom:16px">
+      <img id="pimg" style="max-height:220px;max-width:100%;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.1)">
+      <p style="font-size:13px;font-weight:800;color:#16a34a;margin-top:10px">✅ Photo loaded — tap below to analyse</p>
     </div>
-    <button class="bbtn bg" id="panalyze-btn" style="display:none" onclick="analyzePrescription()">
+    <button class="btn btn-green" id="panalyse-btn" style="display:none" onclick="analysePresc()">
       <span>🔍</span> Explain This Prescription
     </button>
-    <div id="ploading" style="display:none" class="lbox">
-      <span class="le">🤔</span>
+    <div id="ploading" style="display:none" class="loading">
+      <span class="emoji">🤔</span>
       <h3>Reading your prescription...</h3>
-      <p>This takes about 10 seconds</p>
-      <div class="ldots">
-        <span style="background:#22c55e;animation:bob .6s ease-in-out infinite alternate"></span>
-        <span style="background:#22c55e;animation:bob .6s .2s ease-in-out infinite alternate"></span>
-        <span style="background:#22c55e;animation:bob .6s .4s ease-in-out infinite alternate"></span>
+      <p>This takes about 10–15 seconds</p>
+      <div class="dots">
+        <span class="dot1" style="background:#22c55e"></span>
+        <span class="dot2" style="background:#22c55e"></span>
+        <span class="dot3" style="background:#22c55e"></span>
       </div>
     </div>
-    <div id="presult" style="display:none"></div>
+    <div id="presult"></div>
   </div>
-</div>
 </div>
 
 <!-- REPORT -->
-<div id="report" class="screen">
-<div class="inner-wrap" style="background:linear-gradient(160deg,#f0f9ff 0%,var(--color-background-primary) 45%)">
+<div id="report" class="screen" style="background:linear-gradient(170deg,#f0f9ff 0%,#fff 40%)">
   <div class="top-bar">
-    <div class="back" onclick="show('home')">←</div>
-    <div class="bar-info"><h2>🧪 Test Report Explainer</h2><p>We'll tell you if your numbers are okay</p></div>
+    <div class="back-btn" onclick="goto('home')">←</div>
+    <div class="bar-text"><h2>🧪 Test Report Explainer</h2><p>We'll tell you if your numbers are okay</p></div>
   </div>
-  <div class="pad" style="flex:1;overflow-y:auto">
-    <div class="uzone blue-z" id="rzone" onclick="document.getElementById('rfile').click()">
-      <span class="uzone-icon" id="ricon">🧾</span>
-      <h3 id="rtitle">Tap to Upload Test Report</h3>
-      <p id="rsub">Supports photos or image files of your report</p>
+  <div class="inner-content">
+    <div class="uzone blue" id="rzone" onclick="document.getElementById('rfile').click()">
+      <span class="uzone-icon">🧾</span>
+      <h3>Tap to Upload Test Report</h3>
+      <p>Works with photos or images of your blood test / health report</p>
     </div>
-    <input type="file" id="rfile" accept="image/*" style="display:none" onchange="handleReportFile(event)">
-    <div id="rimg-wrap" style="display:none;text-align:center;margin-bottom:14px">
-      <img id="rimg" style="max-height:200px;border-radius:16px;max-width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
+    <input type="file" id="rfile" accept="image/*" style="display:none" onchange="onReportFile(event)">
+    <div id="rpreview" style="display:none;text-align:center;margin-bottom:16px">
+      <img id="rimg" style="max-height:220px;max-width:100%;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.1)">
+      <p style="font-size:13px;font-weight:800;color:#0369a1;margin-top:10px">✅ Report loaded — tap below to analyse</p>
     </div>
-    <button class="bbtn bb" id="ranalyze-btn" style="display:none" onclick="analyzeReport()">
+    <button class="btn btn-blue" id="ranalyse-btn" style="display:none" onclick="analyseReport()">
       <span>🔍</span> Explain This Report
     </button>
-    <div id="rloading" style="display:none" class="lbox">
-      <span class="le">🔬</span>
+    <div id="rloading" style="display:none" class="loading">
+      <span class="emoji">🔬</span>
       <h3>Checking your test values...</h3>
       <p>Comparing with normal ranges</p>
-      <div class="ldots">
-        <span style="background:#0ea5e9;animation:bob .6s ease-in-out infinite alternate"></span>
-        <span style="background:#0ea5e9;animation:bob .6s .2s ease-in-out infinite alternate"></span>
-        <span style="background:#0ea5e9;animation:bob .6s .4s ease-in-out infinite alternate"></span>
+      <div class="dots">
+        <span class="dot1" style="background:#0ea5e9"></span>
+        <span class="dot2" style="background:#0ea5e9"></span>
+        <span class="dot3" style="background:#0ea5e9"></span>
       </div>
     </div>
-    <div id="rresult" style="display:none"></div>
+    <div id="rresult"></div>
   </div>
-</div>
 </div>
 
 <!-- CONVERSATION -->
-<div id="conversation" class="screen">
-<div class="inner-wrap" style="background:linear-gradient(160deg,#fff1f2 0%,var(--color-background-primary) 45%)">
+<div id="conversation" class="screen" style="background:linear-gradient(170deg,#fff1f2 0%,#fff 40%)">
   <div class="top-bar">
-    <div class="back" onclick="show('home')">←</div>
-    <div class="bar-info"><h2>🎙️ Doctor Conversation</h2><p>We'll summarize what your doctor said</p></div>
+    <div class="back-btn" onclick="goto('home')">←</div>
+    <div class="bar-text"><h2>🎙️ Doctor Conversation</h2><p>We'll summarise what your doctor said</p></div>
   </div>
-  <div class="pad" style="flex:1;overflow-y:auto">
-    <div id="conv-record-step">
-      <div class="rec-zone" id="rec-idle">
-        <div class="rec-big-icon">🎙️</div>
+  <div class="inner-content">
+    <div id="c-idle">
+      <div class="rec-box">
+        <div class="rec-big">🎙️</div>
         <h3>Ready to Record</h3>
-        <p>Tap below to record your doctor, or type what they said manually</p>
+        <p>Tap below to record your doctor talking, or type what they said manually.</p>
       </div>
-      <div class="rec-zone" id="rec-active" style="display:none">
-        <div class="pulse-ring"><div class="pulse-inner">🎙️</div></div>
-        <div class="rec-timer" id="rec-timer">00:00</div>
+      <button class="btn btn-rose" onclick="startRec()"><span>🔴</span> Start Recording</button>
+      <button class="btn btn-gray" onclick="showTypeStep()"><span>✏️</span> Type Instead</button>
+      <div class="tip-box"><p>💡 Ask your doctor's permission before recording. Keep your phone close to catch everything clearly.</p></div>
+    </div>
+    <div id="c-recording" style="display:none">
+      <div class="rec-box">
+        <div class="pulse-wrap"><div class="pulse-inner">🎙️</div></div>
+        <div class="rec-timer" id="c-timer">00:00</div>
         <p>Recording in progress...</p>
       </div>
-      <button class="bbtn br" id="rec-btn" onclick="toggleRecord()"><span>🔴</span> Start Recording</button>
-      <button class="bbtn bgray" onclick="switchToType()"><span>✏️</span> Type Instead</button>
-      <div class="tip-box">
-        <p>💡 Tip: Ask your doctor's permission before recording. Keep your phone close to catch everything clearly.</p>
-      </div>
+      <button class="btn btn-gray" onclick="stopRec()"><span>⏹️</span> Stop Recording</button>
     </div>
-    <div id="conv-type-step" style="display:none">
-      <p style="font-size:15px;font-weight:700;color:var(--color-text-secondary);margin-bottom:8px">What did your doctor say? Type or edit it here:</p>
-      <textarea class="transcript-area" id="transcript" rows="8" placeholder="Type what your doctor said... e.g. 'Doctor said my blood pressure is high, take Amlodipine 5mg daily in the morning, reduce salt intake, come back in 2 weeks...'"></textarea>
-      <button class="bbtn br" id="canalyze-btn" onclick="analyzeConversation()"><span>🧠</span> Summarize & Explain</button>
-      <button class="bbtn bgray" style="margin-top:0" onclick="backToRecord()"><span>←</span> Record Instead</button>
-      <div id="cloading" style="display:none" class="lbox">
-        <span class="le">🧠</span>
+    <div id="c-type" style="display:none">
+      <p style="font-size:15px;font-weight:700;color:#6b7280;margin-bottom:10px">Type or edit what your doctor said:</p>
+      <textarea class="textarea" id="c-transcript" rows="8" placeholder="e.g. Doctor said my blood pressure is 140/90, take Amlodipine 5mg every morning, reduce salt, exercise 30 mins daily, come back in 2 weeks..."></textarea>
+      <button class="btn btn-rose" id="c-analyse-btn" onclick="analyseConv()"><span>🧠</span> Summarise & Explain</button>
+      <button class="btn btn-gray" onclick="backToIdle()"><span>←</span> Start Over</button>
+      <div id="cloading" style="display:none" class="loading">
+        <span class="emoji">🧠</span>
         <h3>Reading what the doctor said...</h3>
         <p>Finding the key points for you</p>
-        <div class="ldots">
-          <span style="background:#f43f5e;animation:bob .6s ease-in-out infinite alternate"></span>
-          <span style="background:#f43f5e;animation:bob .6s .2s ease-in-out infinite alternate"></span>
-          <span style="background:#f43f5e;animation:bob .6s .4s ease-in-out infinite alternate"></span>
+        <div class="dots">
+          <span class="dot1" style="background:#f43f5e"></span>
+          <span class="dot2" style="background:#f43f5e"></span>
+          <span class="dot3" style="background:#f43f5e"></span>
         </div>
       </div>
     </div>
-    <div id="cresult" style="display:none"></div>
+    <div id="cresult"></div>
   </div>
-</div>
 </div>
 
 </div>
 
 <script>
-let prescImgB64 = null;
-let reportImgB64 = null;
-let recInterval = null;
-let recSecs = 0;
-let mediaRec = null;
-const GEMINI_API_KEY = "Paste_api_key";
-function show(id){
- document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
- document.getElementById(id).classList.add('on');
- window.scrollTo(0,0);
+// ================================================================
+//  PASTE YOUR GEMINI API KEY BELOW
+//  Get a FREE key at: https://aistudio.google.com/app/apikey
+// ================================================================
+const GEMINI_KEY = "AIzaSyDypQBxqOvY0A8M58-ZCQhWDhDERY5FyIQ";
+// ================================================================
+
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+
+function goto(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0, 0);
 }
 
-// ---- PRESCRIPTION ----
-function handlePrescFile(e){
-  const file = e.target.files[0]; if(!file) return;
-  window.reportMime = file.type:
-  const reader = new FileReader();
-  reader.onload = function(){
-    prescImgB64 = reader.result;
-    document.getElementById('pimg').src = prescImgB64;
-    document.getElementById('pimg-wrap').style.display = 'block';
-    document.getElementById('pzone').style.display = 'none';
-    document.getElementById('panalyze-btn').style.display = 'flex';
-    document.getElementById('presult').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-async function analyzePrescription(){
-
-  document.getElementById('panalyze-btn').style.display = 'none';
-
-  document.getElementById('pimg-wrap').style.display = 'none';
-
-  document.getElementById('ploading').style.display = 'block';
-
-  document.getElementById('presult').style.display = 'none';
-
-  let data;
-
-  try {
-
-    await fakeDelay(2000);
-
-    data = mockPrescription();
-
-  } catch(err) {
-
-    data = mockPrescription();
-
-  }
-
-  document.getElementById('ploading').style.display = 'none';
-
-  const el = document.getElementById('presult');
-
-  el.style.display = 'block';
-
-  el.innerHTML = renderPrescription(data);
-
-}
- 
-
-function getPrescPrompt(){
-  return `You are a friendly health assistant. Look at this prescription image and explain each medicine in VERY simple English (like for a 15-year-old). No medical jargon at all.
-
-Return ONLY valid JSON, no other text:
-{"medicines":[{"name":"Medicine name and dose","purpose":"What it's for in simple words","when":"When and how to take it","precaution":"Simple warning to be careful about"}],"generalAdvice":"Any general advice in simple words"}`;
-}
-
-function renderPrescription(data){
-  let html = '<div class="rtitle">Here\'s what we found 👇</div>';
-  (data.medicines||[]).forEach(m=>{
-    html += `<div class="rcard">
-      <div class="rcard-head"><div class="rcard-ico ico-green">💊</div><h3>${esc(m.name)}</h3></div>
-      <div class="info-row ir-green"><div class="info-label">🎯 What it does</div><div class="info-val">${esc(m.purpose)}</div></div>
-      <div class="info-row ir-blue"><div class="info-label">⏰ When to take</div><div class="info-val">${esc(m.when)}</div></div>
-      <div class="info-row ir-amber"><div class="info-label">⚠️ Be careful about</div><div class="info-val">${esc(m.precaution)}</div></div>
-    </div>`;
+async function callGeminiImage(imageBase64, prompt) {
+  const matches = imageBase64.match(/^data:([^;]+);base64,(.+)$/);
+  if (!matches) throw new Error('Invalid image format.');
+  const mimeType = matches[1];
+  const imgData = matches[2];
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: imgData } }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
+    })
   });
-  if(data.generalAdvice){
-    html += `<div class="summary-card green"><span class="sc-icon">💡</span><div><div class="sc-title">General Advice</div><div class="sc-text">${esc(data.generalAdvice)}</div></div></div>`;
-  }
-  html += discSm();
-  html += `<button class="bbtn bgray" onclick="resetPresc()">📷 Upload Another</button>`;
-  return html;
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'API error ' + res.status);
+  const txt = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const m = txt.replace(/```json|```/g, '').trim().match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('Could not understand the response. Please try again.');
+  return JSON.parse(m[0]);
 }
 
-function resetPresc(){
-  prescImgB64 = null;
-  document.getElementById('pzone').style.display = 'block';
-  document.getElementById('pimg-wrap').style.display = 'none';
-  document.getElementById('panalyze-btn').style.display = 'none';
-  document.getElementById('presult').style.display = 'none';
-  document.getElementById('pfile').value = '';
+async function callGeminiText(prompt) {
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'API error ' + res.status);
+  const txt = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const m = txt.replace(/```json|```/g, '').trim().match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('Could not understand the response. Please try again.');
+  return JSON.parse(m[0]);
 }
 
-// ---- REPORT ----
-function handleReportFile(e){
-  const file = e.target.files[0]; if(!file) return;
+// PRESCRIPTION
+let prescB64 = null;
+function onPrescFile(e) {
+  const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(){
-    reportImgB64 = reader.result;
-    document.getElementById('rimg').src = reportImgB64;
-    document.getElementById('rimg-wrap').style.display = 'block';
-    document.getElementById('rzone').style.display = 'none';
-    document.getElementById('ranalyze-btn').style.display = 'flex';
-    document.getElementById('rresult').style.display = 'none';
+  reader.onload = () => {
+    prescB64 = reader.result;
+    document.getElementById('pzone').style.display = 'none';
+    document.getElementById('ppreview').style.display = 'block';
+    document.getElementById('pimg').src = prescB64;
+    document.getElementById('panalyse-btn').style.display = 'flex';
+    document.getElementById('presult').innerHTML = '';
   };
   reader.readAsDataURL(file);
 }
-
-async function analyzeReport(){
- document.getElementById('ranalyze-btn').style.display = 'none';
- document.getElementById('rimg-wrap').style.display = 'none';
- document.getElementById('rloading').style.display = 'block';
- document.getElementById('rresult').style.display = 'none';
- let data;
- try {
-   const prompt = "Read this medical report and explain in simple English. Return JSON only.";
-   const base64 = reportImgB64.split(',')[1];
-   const res = await fetch(
-     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-     {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-         contents: [{
-           parts: [
-             { text: prompt },
-             {
-               inline_data: {
-                 mime_type: window.reportMime,
-                 data: base64
-               }
-             }
-           ]
-         }]
-       })
-     }
-   );
-   const out = await res.json();
-   if (!out.candidates || !out.candidates[0]) {
-     throw new Error("No Gemini response");
-   }
-   const txt = out.candidates[0].content.parts[0].text.trim();
-   const clean = txt.replace(/```json|```/g,'').trim();
-   data = JSON.parse(clean);
- } catch(err) {
-   alert("Error reading report. Please try again.");
-   console.error(err);
-   return;
- }
- document.getElementById('rloading').style.display = 'none';
- const el = document.getElementById('rresult');
- el.style.display = 'block';
- el.innerHTML = renderReport(data);
-}
-  
-function getReportPrompt(){
-  return `You are a friendly health assistant. Look at this medical test report and explain each value in VERY simple English (like for a 15-year-old). No medical jargon.
-
-Return ONLY valid JSON:
-{"tests":[{"name":"Test name","value":"Patient result with unit","normalRange":"Normal range","status":"normal or high or low","meaning":"What this test checks in simple words","advice":"Simple advice on what to do"}],"overallSummary":"2-3 sentence simple summary","nextSteps":"Simple advice on what to do next"}`;
-}
-
-function renderReport(data){
-  let html = '<div class="rtitle">Your Results Explained 👇</div>';
-  if(data.overallSummary){
-    html += `<div class="summary-card"><span class="sc-icon">📊</span><div><div class="sc-title">Overall Summary</div><div class="sc-text">${esc(data.overallSummary)}</div></div></div>`;
+async function analysePresc() {
+  if (!prescB64) return;
+  document.getElementById('panalyse-btn').style.display = 'none';
+  document.getElementById('ppreview').style.display = 'none';
+  document.getElementById('ploading').style.display = 'block';
+  document.getElementById('presult').innerHTML = '';
+  const prompt = `You are a friendly health assistant. Look at this prescription image and explain each medicine in VERY simple English (like explaining to a 15-year-old). No medical jargon at all.\n\nReturn ONLY valid JSON with no other text:\n{"medicines":[{"name":"Medicine name and dose","purpose":"What it is for in simple words","when":"When and how to take it","precaution":"Simple warning to be careful about"}],"generalAdvice":"Any general advice in simple words","doctorNote":"Any other note from the prescription, or empty string if none"}`;
+  try {
+    const data = await callGeminiImage(prescB64, prompt);
+    document.getElementById('ploading').style.display = 'none';
+    document.getElementById('presult').innerHTML = renderPresc(data);
+  } catch (err) {
+    document.getElementById('ploading').style.display = 'none';
+    document.getElementById('presult').innerHTML = errBox(err.message, 'resetPresc()');
   }
-  (data.tests||[]).forEach(t=>{
-    const badgeCls = t.status==='normal'?'badge-green':t.status==='high'?'badge-red':'badge-blue';
-    const icon = t.status==='normal'?'✅':t.status==='high'?'⬆️':'⬇️';
-    html += `<div class="rcard">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px">
-        <h3 style="font-size:17px;font-weight:900;color:var(--color-text-primary)">${esc(t.name)}</h3>
-        <span class="badge ${badgeCls}">${icon} ${t.status}</span>
+}
+function resetPresc() {
+  prescB64 = null;
+  document.getElementById('pfile').value = '';
+  document.getElementById('pzone').style.display = 'block';
+  document.getElementById('ppreview').style.display = 'none';
+  document.getElementById('panalyse-btn').style.display = 'none';
+  document.getElementById('presult').innerHTML = '';
+}
+function renderPresc(d) {
+  let h = '<div class="section-title">Here\'s what we found 👇</div>';
+  (d.medicines || []).forEach(m => {
+    h += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-g">💊</div><h3>${x(m.name)}</h3></div>
+      <div class="info-row ir-g"><div class="info-lbl">🎯 What it does</div><div class="info-val">${x(m.purpose)}</div></div>
+      <div class="info-row ir-b"><div class="info-lbl">⏰ When to take</div><div class="info-val">${x(m.when)}</div></div>
+      <div class="info-row ir-a"><div class="info-lbl">⚠️ Be careful about</div><div class="info-val">${x(m.precaution)}</div></div></div>`;
+  });
+  if (d.generalAdvice) h += sbBox('sb-green', '💡', 'General Advice', d.generalAdvice);
+  if (d.doctorNote) h += sbBox('sb-blue', '📝', "Doctor's Note", d.doctorNote);
+  h += warnBox();
+  h += `<button class="btn btn-gray" onclick="resetPresc()">📷 Upload Another Prescription</button>`;
+  return h;
+}
+
+// REPORT
+let reportB64 = null;
+function onReportFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    reportB64 = reader.result;
+    document.getElementById('rzone').style.display = 'none';
+    document.getElementById('rpreview').style.display = 'block';
+    document.getElementById('rimg').src = reportB64;
+    document.getElementById('ranalyse-btn').style.display = 'flex';
+    document.getElementById('rresult').innerHTML = '';
+  };
+  reader.readAsDataURL(file);
+}
+async function analyseReport() {
+  if (!reportB64) return;
+  document.getElementById('ranalyse-btn').style.display = 'none';
+  document.getElementById('rpreview').style.display = 'none';
+  document.getElementById('rloading').style.display = 'block';
+  document.getElementById('rresult').innerHTML = '';
+  const prompt = `You are a friendly health assistant. Look at this medical test report and explain each value in VERY simple English (like explaining to a 15-year-old). No medical jargon.\n\nReturn ONLY valid JSON with no other text:\n{"overallSummary":"2-3 sentence simple summary of the whole report","tests":[{"name":"Test name","value":"Patient result with unit","normalRange":"Normal range","status":"normal or high or low","meaning":"What this test checks in simple words","advice":"Simple advice on what to do"}],"nextSteps":"Simple advice on what to do next"}`;
+  try {
+    const data = await callGeminiImage(reportB64, prompt);
+    document.getElementById('rloading').style.display = 'none';
+    document.getElementById('rresult').innerHTML = renderReport(data);
+  } catch (err) {
+    document.getElementById('rloading').style.display = 'none';
+    document.getElementById('rresult').innerHTML = errBox(err.message, 'resetReport()');
+  }
+}
+function resetReport() {
+  reportB64 = null;
+  document.getElementById('rfile').value = '';
+  document.getElementById('rzone').style.display = 'block';
+  document.getElementById('rpreview').style.display = 'none';
+  document.getElementById('ranalyse-btn').style.display = 'none';
+  document.getElementById('rresult').innerHTML = '';
+}
+function renderReport(d) {
+  let h = '<div class="section-title">Your Results Explained 👇</div>';
+  if (d.overallSummary) h += sbBox('sb-blue', '📊', 'Overall Summary', d.overallSummary);
+  (d.tests || []).forEach(t => {
+    const st = (t.status || 'normal').toLowerCase();
+    const badgeCls = st === 'normal' ? 'b-green' : st === 'high' ? 'b-red' : 'b-blue';
+    const badgeIcon = st === 'normal' ? '✅' : st === 'high' ? '⬆️' : '⬇️';
+    h += `<div class="rcard">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px">
+        <h3 style="font-size:17px;font-weight:900;color:#111827;flex:1">${x(t.name)}</h3>
+        <span class="badge ${badgeCls}">${badgeIcon} ${x(t.status)}</span>
       </div>
       <div class="val-grid">
-        <div class="val-box"><div class="vb-label">Your Value</div><div class="vb-val">${esc(t.value)}</div></div>
-        <div class="val-box"><div class="vb-label">Normal Range</div><div class="vb-val" style="font-size:14px">${esc(t.normalRange)}</div></div>
+        <div class="val-box"><div class="vb-lbl">Your Value</div><div class="vb-val" style="font-size:17px">${x(t.value)}</div></div>
+        <div class="val-box"><div class="vb-lbl">Normal Range</div><div class="vb-val" style="font-size:14px">${x(t.normalRange)}</div></div>
       </div>
-      <div class="info-row ir-purple"><div class="info-label">🔬 What it means</div><div class="info-val">${esc(t.meaning)}</div></div>
-      <div class="info-row ${t.status==='normal'?'ir-green':'ir-amber'}"><div class="info-label">💡 What to do</div><div class="info-val">${esc(t.advice)}</div></div>
+      <div class="info-row ir-p"><div class="info-lbl">🔬 What it means</div><div class="info-val">${x(t.meaning)}</div></div>
+      <div class="info-row ${st === 'normal' ? 'ir-g' : 'ir-a'}"><div class="info-lbl">💡 What to do</div><div class="info-val">${x(t.advice)}</div></div>
     </div>`;
   });
-  if(data.nextSteps){
-    html += `<div class="summary-card green"><span class="sc-icon">🚶</span><div><div class="sc-title">What to do next</div><div class="sc-text">${esc(data.nextSteps)}</div></div></div>`;
-  }
-  html += discSm();
-  html += `<button class="bbtn bgray" onclick="resetReport()">📂 Upload Another</button>`;
-  return html;
+  if (d.nextSteps) h += sbBox('sb-green', '🚶', 'What to do next', d.nextSteps);
+  h += warnBox();
+  h += `<button class="btn btn-gray" onclick="resetReport()">📂 Upload Another Report</button>`;
+  return h;
 }
 
-function resetReport(){
-  reportImgB64 = null;
-  document.getElementById('rzone').style.display = 'block';
-  document.getElementById('rimg-wrap').style.display = 'none';
-  document.getElementById('ranalyze-btn').style.display = 'none';
-  document.getElementById('rresult').style.display = 'none';
-  document.getElementById('rfile').value = '';
+// CONVERSATION
+let recInterval = null, recSecs = 0, mediaRec = null;
+function showTypeStep() {
+  document.getElementById('c-idle').style.display = 'none';
+  document.getElementById('c-type').style.display = 'block';
 }
-
-// ---- CONVERSATION ----
-function switchToType(){
-  document.getElementById('conv-record-step').style.display = 'none';
-  document.getElementById('conv-type-step').style.display = 'block';
+function backToIdle() {
+  document.getElementById('c-idle').style.display = 'block';
+  document.getElementById('c-recording').style.display = 'none';
+  document.getElementById('c-type').style.display = 'none';
+  document.getElementById('cresult').innerHTML = '';
+  document.getElementById('c-transcript').value = '';
+  document.getElementById('cloading').style.display = 'none';
+  document.getElementById('c-analyse-btn').style.display = 'flex';
 }
-function backToRecord(){
-  document.getElementById('conv-record-step').style.display = 'block';
-  document.getElementById('conv-type-step').style.display = 'none';
-  document.getElementById('cresult').style.display = 'none';
-  document.getElementById('transcript').value = '';
-}
-
-async function toggleRecord(){
-  const btn = document.getElementById('rec-btn');
-  if(!mediaRec){
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-      mediaRec = new MediaRecorder(stream);
-      mediaRec.start();
-      recSecs = 0;
-      document.getElementById('rec-idle').style.display = 'none';
-      document.getElementById('rec-active').style.display = 'block';
-      btn.innerHTML = '<span>⏹️</span> Stop Recording';
-      btn.className = 'bbtn bgray';
-      recInterval = setInterval(()=>{
-        recSecs++;
-        const m = String(Math.floor(recSecs/60)).padStart(2,'0');
-        const s = String(recSecs%60).padStart(2,'0');
-        document.getElementById('rec-timer').textContent = m+':'+s;
-      },1000);
-      mediaRec.onstop = ()=>{
-        stream.getTracks().forEach(t=>t.stop());
-        mediaRec = null;
-        clearInterval(recInterval);
-        document.getElementById('rec-idle').style.display = 'block';
-        document.getElementById('rec-active').style.display = 'none';
-        btn.innerHTML = '<span>🔴</span> Start Recording';
-        btn.className = 'bbtn br';
-        document.getElementById('transcript').value = 'Doctor said: Your blood pressure is slightly high at 140/90. Take Amlodipine 5mg once every morning. Also take Metformin 500mg twice a day after meals for sugar control. Reduce salty food, exercise 30 minutes daily. Come back after 2 weeks. Get HbA1c test done before next visit.';
-        switchToType();
-      };
-    } catch(e) {
-      alert('Microphone access denied. Please allow microphone and try again, or use "Type Instead".');
-    }
-  } else {
-    mediaRec.stop();
+async function startRec() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRec = new MediaRecorder(stream);
+    mediaRec.start();
+    recSecs = 0;
+    document.getElementById('c-idle').style.display = 'none';
+    document.getElementById('c-recording').style.display = 'block';
+    recInterval = setInterval(() => {
+      recSecs++;
+      const m = String(Math.floor(recSecs / 60)).padStart(2, '0');
+      const s = String(recSecs % 60).padStart(2, '0');
+      document.getElementById('c-timer').textContent = m + ':' + s;
+    }, 1000);
+    mediaRec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      clearInterval(recInterval);
+      document.getElementById('c-recording').style.display = 'none';
+      document.getElementById('c-type').style.display = 'block';
+      document.getElementById('c-transcript').value = '';
+      document.getElementById('c-transcript').placeholder = 'Recording stopped. Please type what your doctor said here, then tap Summarise.';
+    };
+  } catch {
+    alert('Microphone access was denied. Please use "Type Instead" to enter what your doctor said.');
   }
 }
-
-async function analyzeConversation(){
- const text = document.getElementById('transcript').value.trim();
- if(!text) return;
- document.getElementById('canalyze-btn').style.display = 'none';
- document.getElementById('transcript').style.display = 'none';
- document.getElementById('cloading').style.display = 'block';
- document.getElementById('cresult').style.display = 'none';
- let data;
- try {
-   await fakeDelay(2000);
-   data = mockConversation();
- } catch(err){
-   data = mockConversation();
- }
- document.getElementById('cloading').style.display = 'none';
- const el = document.getElementById('cresult');
- el.style.display = 'block';
- el.innerHTML = renderConversation(data);
+function stopRec() {
+  if (mediaRec) mediaRec.stop();
+  mediaRec = null;
 }
-
-function getConvPrompt(text){
-  return `You are a friendly health assistant. Read this doctor's conversation and summarize in VERY simple English (like for a 15-year-old). No medical jargon.
-
-Conversation: "${text}"
-
-Return ONLY valid JSON:
-{"summary":"2-3 sentence simple summary of the visit","importantPoints":["point1","point2"],"medicines":[{"name":"medicine name and dose","details":"when to take and what for"}],"instructions":["instruction1","instruction2"],"followUp":"when to come back or what test to get, or empty string"}`;
+async function analyseConv() {
+  const text = document.getElementById('c-transcript').value.trim();
+  if (!text) { alert('Please type what your doctor said first.'); return; }
+  document.getElementById('c-analyse-btn').style.display = 'none';
+  document.getElementById('cloading').style.display = 'block';
+  document.getElementById('cresult').innerHTML = '';
+  const prompt = `You are a friendly health assistant. Read this doctor's conversation and summarise it in VERY simple English (like explaining to a 15-year-old). No medical jargon.\n\nConversation: "${text}"\n\nReturn ONLY valid JSON with no other text:\n{"summary":"2-3 sentence simple summary of the visit","importantPoints":["point1","point2"],"medicines":[{"name":"medicine name and dose","details":"when to take and what for"}],"instructions":["instruction1","instruction2"],"followUp":"when to come back or what test to get, or empty string if none"}`;
+  try {
+    const data = await callGeminiText(prompt);
+    document.getElementById('cloading').style.display = 'none';
+    document.getElementById('c-type').style.display = 'none';
+    document.getElementById('cresult').innerHTML = renderConv(data);
+  } catch (err) {
+    document.getElementById('cloading').style.display = 'none';
+    document.getElementById('c-analyse-btn').style.display = 'flex';
+    document.getElementById('cresult').innerHTML = errBox(err.message, 'backToIdle()');
+  }
 }
-
-function renderConversation(data){
-  let html = '<div class="rtitle">Your Doctor Visit Summary 👇</div>';
-  if(data.summary){
-    html += `<div class="summary-card" style="background:#fff1f2;border-color:#fecdd3"><span class="sc-icon">📋</span><div><div class="sc-title">Summary</div><div class="sc-text">${esc(data.summary)}</div></div></div>`;
+function renderConv(d) {
+  let h = '<div class="section-title">Your Doctor Visit Summary 👇</div>';
+  if (d.summary) h += sbBox('sb-rose', '📋', 'Summary', d.summary);
+  if (d.importantPoints?.length) {
+    h += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-a">⭐</div><h3>Important Points</h3></div><ul class="num-list">`;
+    d.importantPoints.forEach((p, i) => { h += `<li><span class="num">${i + 1}.</span>${x(p)}</li>`; });
+    h += '</ul></div>';
   }
-  if(data.importantPoints?.length){
-    html += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-amber">⭐</div><h3>Important Points</h3></div><ul class="step-list">`;
-    data.importantPoints.forEach((p,i)=>{html+=`<li><span class="step-num">${i+1}.</span>${esc(p)}</li>`});
-    html += '</ul></div>';
-  }
-  if(data.medicines?.length){
-    html += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-green">💊</div><h3>Medicines Mentioned</h3></div>`;
-    data.medicines.forEach(m=>{
-      html += `<div class="info-row ir-green" style="margin-bottom:8px"><div class="info-label" style="font-size:13px;opacity:1;color:#15803d;font-weight:900">${esc(m.name)}</div><div class="info-val">${esc(m.details)}</div></div>`;
+  if (d.medicines?.length) {
+    h += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-g">💊</div><h3>Medicines Mentioned</h3></div>`;
+    d.medicines.forEach(m => {
+      h += `<div class="info-row ir-g" style="margin-bottom:8px"><div class="info-lbl" style="font-size:13px;opacity:1;color:#15803d;font-weight:900">${x(m.name)}</div><div class="info-val">${x(m.details)}</div></div>`;
     });
-    html += '</div>';
+    h += '</div>';
   }
-  if(data.instructions?.length){
-    html += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-blue">📌</div><h3>Doctor's Instructions</h3></div><ul class="check-list">`;
-    data.instructions.forEach(i=>{html+=`<li><span class="check-icon">✓</span>${esc(i)}</li>`});
-    html += '</ul></div>';
+  if (d.instructions?.length) {
+    h += `<div class="rcard"><div class="rcard-head"><div class="rcard-ico ico-b">📌</div><h3>Doctor's Instructions</h3></div><ul class="check-list">`;
+    d.instructions.forEach(i => { h += `<li><span style="color:#3b82f6;flex-shrink:0">✓</span>${x(i)}</li>`; });
+    h += '</ul></div>';
   }
-  if(data.followUp){
-    html += `<div class="summary-card" style="background:#f5f3ff;border-color:#ddd6fe"><span class="sc-icon">📅</span><div><div class="sc-title">Follow-up</div><div class="sc-text">${esc(data.followUp)}</div></div></div>`;
-  }
-  html += discSm();
-  html += `<button class="bbtn bgray" onclick="backToRecord()">🎙️ Record Another</button>`;
-  return html;
+  if (d.followUp) h += sbBox('sb-purple', '📅', 'Follow-up', d.followUp);
+  h += warnBox();
+  h += `<button class="btn btn-gray" onclick="backToIdle()">🎙️ Record Another Conversation</button>`;
+  return h;
 }
 
-// ---- AI CALLS ----
-async function callClaudeWithImage(b64, prompt){
-  const matches = b64.match(/^data:([^;]+);base64,(.+)$/);
-  const mediaType = matches[1];
-  const imgData = matches[2];
-  const res = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:mediaType,data:imgData}},
-        {type:'text',text:prompt}
-      ]}]
-    })
-  });
-  const d = await res.json();
-  const txt = d.content?.[0]?.text||'{}';
-  return JSON.parse(txt.match(/\{[\s\S]*\}/)?.[0]||'{}');
+function x(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function sbBox(cls, icon, title, text) {
+  return `<div class="summary-box ${cls}"><span class="sb-icon">${icon}</span><div><div class="sb-head">${title}</div><div class="sb-text">${x(text)}</div></div></div>`;
 }
-
-async function callClaude(prompt){
-  const res = await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      messages:[{role:'user',content:prompt}]
-    })
-  });
-  const d = await res.json();
-  const txt = d.content?.[0]?.text||'{}';
-  return JSON.parse(txt.match(/\{[\s\S]*\}/)?.[0]||'{}');
+function warnBox() {
+  return '<div class="warn-box"><p>⚠️ This is NOT medical advice. Always follow your doctor\'s exact instructions.</p></div>';
 }
-
-// ---- MOCK DATA ----
-function mockPrescription(){
-  return {medicines:[
-    {name:'Paracetamol 500mg',purpose:'Reduces fever and pain. Helps with headaches, body pain, and high temperature.',when:'Take 1 tablet every 6 hours when needed. Always take after eating. Max 4 tablets per day.',precaution:'Do not drink alcohol. If pain does not go away in 3 days, see your doctor.'},
-    {name:'Amoxicillin 250mg',purpose:'An antibiotic — it fights bacteria causing your infection.',when:'Take 1 capsule 3 times a day — morning, afternoon, and night. Take with food or milk.',precaution:'Finish the full course even if you feel better. Tell your doctor if you get a rash.'},
-    {name:'Cetirizine 10mg',purpose:'Helps with allergies — runny nose, sneezing, and itchy eyes.',when:'Take 1 tablet at night before sleeping.',precaution:'Can make you feel sleepy. Do not drive after taking this.'}
-  ],generalAdvice:'Drink plenty of water. Rest well. Eat light food. Come back if symptoms get worse.'};
+function errBox(msg, resetFn) {
+  return `<div class="err-box"><p>❌ Could not process your request</p><small>${x(msg)}</small></div><button class="btn btn-gray" onclick="${resetFn}">← Try Again</button>`;
 }
-
-function mockReport(){
-  return {
-    overallSummary:'Your report looks mostly good! Blood sugar and thyroid are perfectly normal. Your blood level is a little low — this can make you feel tired. Cholesterol is slightly high — needs some diet changes.',
-    tests:[
-      {name:'Haemoglobin (Blood Level)',value:'11.2 g/dL',normalRange:'12–15.5 g/dL',status:'low',meaning:'Haemoglobin carries oxygen in your blood. When low, it is called anaemia — you may feel tired or dizzy.',advice:'Eat more iron-rich foods like spinach, meat, and lentils. Your doctor may give you iron tablets.'},
-      {name:'Blood Sugar (Fasting)',value:'98 mg/dL',normalRange:'70–100 mg/dL',status:'normal',meaning:'This checks how much sugar is in your blood when you have not eaten. It tells if you have diabetes.',advice:'Great news! Your blood sugar is normal. Keep eating healthy and avoid too many sweets.'},
-      {name:'Total Cholesterol',value:'215 mg/dL',normalRange:'Below 200 mg/dL',status:'high',meaning:'Cholesterol is a fatty substance in your blood. Too much can block blood vessels and cause heart problems.',advice:'Slightly above normal. Eat less fried food and red meat. Exercise 30 minutes daily. Talk to your doctor.'},
-      {name:'Thyroid (TSH)',value:'2.8 mIU/L',normalRange:'0.5–5.0 mIU/L',status:'normal',meaning:'This checks your thyroid gland which controls your energy and body weight.',advice:'Your thyroid is working perfectly! No action needed.'}
-    ],
-    nextSteps:'Show this report to your doctor. Focus on eating healthy, exercising daily, and getting enough sleep. Come back for tests in 3 months.'
-  };
-}
-
-function mockConversation(){
-  return {
-    summary:'Your doctor found your blood pressure is a little high and sugar levels need to be watched. You have been given medicines for both. With diet changes and exercise, you can get better.',
-    importantPoints:['Blood pressure is 140/90 — slightly high, needs medicine','Sugar levels need monitoring with HbA1c test','Diet changes are very important — less salt and sugar','Exercise 30 minutes every day'],
-    medicines:[
-      {name:'Amlodipine 5mg',details:'Take 1 tablet every morning. This controls your blood pressure.'},
-      {name:'Metformin 500mg',details:'Take 1 tablet twice a day — after breakfast and after dinner. Controls blood sugar.'}
-    ],
-    instructions:['Eat less salty food — avoid pickles and extra salt','Walk or exercise for 30 minutes every day','Drink 8–10 glasses of water daily','Avoid fried and sugary food'],
-    followUp:'Come back after 2 weeks. Get an HbA1c blood test done before your next visit.'
-  };
-}
-
-// ---- UTILS ----
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fakeDelay(ms){return new Promise(r=>setTimeout(r,ms))}
-function discSm(){return '<div class="disc-sm"><p>⚠️ This is NOT medical advice. Always follow your doctor\'s instructions.</p></div>'}
 </script>
+</body>
+</html>
